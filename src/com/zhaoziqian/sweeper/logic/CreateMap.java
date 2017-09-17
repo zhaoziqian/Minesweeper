@@ -87,9 +87,9 @@ public class CreateMap {
 		this.map = new int[width][height];
 		
 		// 初始化0到地图上
-		for (int[] is : map) {
-			for (int i : is) {
-				i = 0;
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map.length; j++) {
+				map[i][j] = 0;
 			}
 		}
 	}
