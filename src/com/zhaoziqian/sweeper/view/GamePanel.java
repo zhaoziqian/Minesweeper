@@ -6,15 +6,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Panel;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
-
-import javax.swing.ImageIcon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class GamePanel extends Panel {
 
 	public static final int ITEM_RADUS = 25;
 
-	public static final int ITEM_BORDER = 1;
+	public static final int ITEM_BORDER = 3;
 
 	public static final Image BLOCK = Toolkit.getDefaultToolkit().getImage("image/swreep/block.png")
 			.getScaledInstance(ITEM_RADUS, ITEM_RADUS, Image.SCALE_DEFAULT);
@@ -43,11 +44,11 @@ public class GamePanel extends Panel {
 	public static final Image EIGHT = Toolkit.getDefaultToolkit().getImage("image/swreep/eight.png")
 			.getScaledInstance(ITEM_RADUS, ITEM_RADUS, Image.SCALE_DEFAULT);
 
-	public static final Image block = new ImageIcon("image/swreep/block.png").getImage();
 	private int[][] map;
 
 	public GamePanel(int[][] map) {
 		this.map = map;
+		initListener();
 	}
 
 	public int[][] getMap() {
@@ -57,7 +58,31 @@ public class GamePanel extends Panel {
 	public void setMap(int[][] map) {
 		this.map = map;
 	}
+	
+	public void initListener(){
+		this.addMouseListener(new MouseAdapter() {
 
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				System.out.println(e.getPoint());
+				
+				for (int i = 0; i < map.length; i++) {
+					for (int j = 0; j < map[0].length; j++) {
+						
+						int x = 10 + j * ITEM_RADUS - 1;
+						int y = 10 + i * ITEM_RADUS - 1;
+						
+						Rectangle rectangle = new Rectangle(x, y, ITEM_RADUS, ITEM_RADUS);
+						
+						if(rectangle.contains(e.getPoint())) System.out.println(map[i][j]);
+						
+					}
+				}
+			}
+		});
+	}
+	
+	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);

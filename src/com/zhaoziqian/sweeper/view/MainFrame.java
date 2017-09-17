@@ -2,8 +2,10 @@ package com.zhaoziqian.sweeper.view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -17,6 +19,9 @@ import javax.swing.JSeparator;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JButton;
 import java.awt.Panel;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
 	
@@ -37,7 +42,14 @@ public class MainFrame extends JFrame {
 	 */
 	private static int boomCount = 10;
 	
+	public static final Image BLOCK = Toolkit.getDefaultToolkit().getImage("image/swreep/block.png")
+			.getScaledInstance(GamePanel.ITEM_RADUS, GamePanel.ITEM_RADUS, Image.SCALE_DEFAULT);
+	public static final Image FLAG = Toolkit.getDefaultToolkit().getImage("image/swreep/flag.png")
+			.getScaledInstance(GamePanel.ITEM_RADUS, GamePanel.ITEM_RADUS, Image.SCALE_DEFAULT);
+	
 	private JPanel contentPane;
+	
+	private JLayeredPane control;
 
 	/**
 	 * Launch the application.
@@ -73,6 +85,8 @@ public class MainFrame extends JFrame {
 		setTitle("扫雷");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, frameWidth, frameHeight);
+		
+		// 加盖一层操作层
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
