@@ -32,6 +32,7 @@ public class CreateMap {
 	 * 1至8 	- 地图提示信息
 	 * 0 	- 空白地域
 	 * -9   - 表示标记
+	 * -1   - 被引爆
 	 */
 	private int[][] map ;
 	
@@ -44,7 +45,17 @@ public class CreateMap {
 	private int boomCount;
 	
 	
-	
+	/**
+	 * 
+	* @Title: getMap 
+	* @Description: 地图类提供的唯一公开方法，直接返回初始化好的地图数组
+	* @param @param width	地图的宽
+	* @param @param height	地图的高
+	* @param @param boomCount	炸弹总数
+	* @param @return    设定文件  返回初始化好的地图二维数组
+	* @return int[][]    返回类型 
+	* @throws
+	 */
 	public int[][] getMap(Integer width , Integer height , int boomCount){
 		
 		this.createBlankMap(width, height);
@@ -68,8 +79,8 @@ public class CreateMap {
 	private void createBlankMap(Integer width , Integer height){
 		
 		if (width == null || width == 0 || height == null || height == 0) {
-			width = 25;
-			height = 25;
+			width = 9;
+			height = 9;
 		}
 		this.width = width;
 		this.height = height;
@@ -82,11 +93,25 @@ public class CreateMap {
 			}
 		}
 	}
-	
+	/**
+	 * 
+	* @Title: setBoomCount 
+	* @Description: 设置炸弹总数
+	* @param @param count    设定文件 
+	* @return void    返回类型 
+	* @throws
+	 */
 	private void setBoomCount(int count){
 		this.boomCount = count;
 	}
-	
+	/**
+	 * 
+	* @Title: setBoom 
+	* @Description: 随机设置炸弹
+	* @param     设定文件 
+	* @return void    返回类型 
+	* @throws
+	 */
 	private void setBoom(){
 		// 生成随机数对象
 		Random random = new Random();
@@ -104,7 +129,14 @@ public class CreateMap {
 			}
 		}
 	}
-	
+	/**
+	 * 
+	* @Title: setTipNum 
+	* @Description: 设置提示数字
+	* @param     设定文件 
+	* @return void    返回类型 
+	* @throws
+	 */
 	private void setTipNum(){
 		
 		for (int i = 0; i < map.length; i++) {
