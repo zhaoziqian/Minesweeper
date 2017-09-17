@@ -14,9 +14,13 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 
+import com.zhaoziqian.sweeper.logic.CreateMap;
+
 public class GamePanel extends Panel {
-	
+
 	private Point change = null;
+
+	private CreateMap cMap = new CreateMap();
 
 	public static final int ITEM_RADUS = 25;
 
@@ -50,17 +54,12 @@ public class GamePanel extends Panel {
 			.getScaledInstance(ITEM_RADUS, ITEM_RADUS, Image.SCALE_DEFAULT);
 
 	public static final Image block = new ImageIcon("image/swreep/block.png").getImage();
-	private int[][] map;
-	private int[][] reMap;
+	private static int[][] map;
+	private static int[][] reMap;
 
 	public GamePanel(int[][] map) {
 		this.map = map;
 		this.reMap = new int[map.length][map[0].length];
-//		for (int[] is : reMap) {
-//			for (int i : is) {
-//				i = 999;
-//			}
-//		}
 		for (int i = 0; i < reMap.length; i++) {
 			for (int j = 0; j < reMap[0].length; j++) {
 				reMap[i][j] = 999;
@@ -75,68 +74,73 @@ public class GamePanel extends Panel {
 
 	public void setMap(int[][] map) {
 		this.map = map;
+		this.reMap = new int[map.length][map[0].length];
+		for (int i = 0; i < reMap.length; i++) {
+			for (int j = 0; j < reMap[0].length; j++) {
+				reMap[i][j] = 999;
+			}
+		}
+		GamePanel.this.repaint();
 	}
-	
-	
-	
-	public void initListener(){
-		
+
+	public void initListener() {
+
 		this.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				
-				
+
 				for (int i = 0; i < map.length; i++) {
 					for (int j = 0; j < map[0].length; j++) {
-						
+
 						int x = 10 + j * ITEM_RADUS - ITEM_BORDER;
 						int y = 10 + i * ITEM_RADUS - ITEM_BORDER;
-						
+
 						Rectangle rec = new Rectangle(x, y, ITEM_RADUS, ITEM_RADUS);
-						
-						
-						if(rec.contains(e.getPoint())){
-							
+
+						if (rec.contains(e.getPoint())) {
+							// if(e.getModifiersEx() == e.BUTTON1_DOWN_MASK +
+							// e.BUTTON3_DOWN_MASK)
 							switch (e.getButton()) {
-							case 1:
-								if(reMap[i][j] == -9){
+							case MouseEvent.BUTTON1:
+								if (reMap[i][j] == -9) {
 									return;
 								}
-								
+
 								reMap[i][j] = map[i][j];
-								if(reMap[i][j] == 9){
+								if (reMap[i][j] == 9) {
 									reMap[i][j] = -1;
 								}
+								GamePanel.wave(j, i);
 								break;
-							case 2:
+							case MouseEvent.BUTTON2:
 								// 需要考虑地图边界
-								for (int k = -1 ; k < 2; k++) {
-									for (int n = -1 ; n < 2; n++) {
-										
-										if (i == 0 && j == 0) continue;
-										
-										if(i + k < 0 || i + k >= reMap.length) continue;
-										
-										if(j + n < 0 || j + n >= reMap[0].length) continue;
-										
-										if(reMap[i + k][j + n] == -9) continue;
-										
+								for (int k = -1; k < 2; k++) {
+									for (int n = -1; n < 2; n++) {
+
+										if (i == 0 && j == 0)
+											continue;
+
+										if (i + k < 0 || i + k >= reMap.length)
+											continue;
+
+										if (j + n < 0 || j + n >= reMap[0].length)
+											continue;
+
+										if (reMap[i + k][j + n] == -9)
+											continue;
+
 										reMap[i + k][j + n] = map[i + k][j + n];
-										
-										if(reMap[i + k][j + n] == 9){
+
+										if (reMap[i + k][j + n] == 9) {
 											reMap[i + k][j + n] = -1;
 										}
 									}
 								}
 								break;
-							case 3:
-								if(reMap[i][j] != 999){
-									return;
-								}
-								
-								if(reMap[i][j] == -9){
+							case MouseEvent.BUTTON3:
+								if (reMap[i][j] == -9) {
 									reMap[i][j] = 999;
-								}else{
+								} else if (reMap[i][j] == 999) {
 									reMap[i][j] = -9;
 								}
 								break;
@@ -144,56 +148,78 @@ public class GamePanel extends Panel {
 							default:
 								break;
 							}
-							
+
 						}
-						
-						
-//						if(e.getButton() == 1 && rec.contains(e.getPoint()) ) {
-//							if(reMap[i][j] == -9){
-//								return;
-//							}
-//							
-//							reMap[i][j] = map[i][j];
-//							if(reMap[i][j] == 9){
-//								reMap[i][j] = -1;
-//							}
-//						}
-//						
-//						if(e.getButton() == 3 && rec.contains(e.getPoint())){
-//							if(reMap[i][j] == -9){
-//								reMap[i][j] = 999;
-//							}else{
-//								reMap[i][j] = -9;
-//							}
-//						}
-//						if(e.getButton() == 2 && rec.contains(e.getPoint())){
-//
-//							// 需要考虑地图边界
-//							for (int k = -1 ; k < 2; k++) {
-//								for (int n = -1 ; n < 2; n++) {
-//									if (i == 0 && j == 0) continue;
-//									
-//									if(i + k < 0 || i + k >= reMap.length) continue;
-//									
-//									if(j + n < 0 || j + n >= reMap[0].length) continue;
-//									
-//									reMap[i + k][j + n] = map[i + k][j + n];
-//								}
-//							}
-//						}
-						
-						
 
 						GamePanel.this.repaint();
-						
+
 					}
 				}
 			}
 		});
-}
-	
-	
-	
+	}
+
+	private static void wave(int x, int y) {
+		
+		if ((map[y][x] >= 1 && map[y][x] <= 8) || map[y][x] == -9) {
+			return;
+		}
+		
+		// 只用判断上下左右四个方向
+		
+		// 上方可行
+		if (y - 1 > 0 && map[y - 1][x] != -9 && reMap[y - 1][x] == 999 ){
+			reMap[y - 1][x] = map[y - 1][x];
+			if (map[y - 1][x] == 0) wave(x ,y - 1);
+		}
+		// 右方可行
+		if (x + 1 < map[0].length && map[y][x + 1] != -9 && reMap[y][x + 1] == 999) {
+			reMap[y][x + 1] = map[y][x + 1];
+			if (map[y][x + 1] == 0) wave(x + 1 ,y);
+		}
+		// 下方可行
+		if (y + 1 <map.length && map[y + 1][x] != -9 && reMap[y + 1][x] == 999){
+			reMap[y + 1][x] = map[y + 1][x];
+			if (map[y + 1][x] == 0) wave(x ,y + 1);
+		}
+		// 左方可行
+		if (x - 1 > 0 && map[y][x - 1] != -9 && reMap[y][x - 1] == 999) {
+			reMap[y][x - 1] = map[y][x - 1];
+			if (map[y][x - 1] == 0) wave(x - 1 ,y);
+		}
+		
+		
+//		// 需要考虑地图边界
+//		for (int i = -1; i < 2; i++) {
+//			for (int j = -1; j < 2; j++) {
+//				if (i == 0 && j == 0) continue;
+//
+//				if (y + i < 0 || y + i >= map.length) continue;
+//
+//				if (x + j < 0 || x + j >= map[0].length) continue;
+//				
+////				if (map[y + i][x + j] != 0 ) {
+////					continue;
+////				}
+//				if (map[y + i][x + j] >= 1 && map[y + i][x + j] <= 8) {
+//					reMap[y + i][x + j] = map[y + i][x + j];
+//				}
+//				if (map[y + i][x + j] == 0) {
+//					reMap[y + i][x + j] = map[y + i][x + j];
+//					if (reMap[y + i][x + j] != 999) {
+//						continue;
+//					}
+//					wave(x + j,y + i);
+//				}
+//				
+////				if (map[y + i][x + j] == 0) {
+////					reMap[y + i][x + j] = 0;
+////					wave(y + i,x + j);
+////				}
+//
+//			}
+//		}
+	}
 
 	@Override
 	public void paint(Graphics g) {
@@ -212,61 +238,71 @@ public class GamePanel extends Panel {
 
 				int x = 10 + j * ITEM_RADUS - ITEM_BORDER;
 				int y = 10 + i * ITEM_RADUS - ITEM_BORDER;
-				
+
 				g2.drawRect(x, y, ITEM_RADUS, ITEM_RADUS);
 
 				Image image = null;
-				
-//				Rectangle rec = new Rectangle(x, y, ITEM_RADUS, ITEM_RADUS);
-				
-					switch (reMap[i][j]) {
-					case 0:
-						image = ZERO;
-						break;
-					case 1:
-						image = ONE;
-						break;
-					case 2:
-						image = TWO;
-						break;
-					case 3:
-						image = THREE;
-						break;
-					case 4:
-						image = FOUR;
-						break;
-					case 5:
-						image = FIVE;
-						break;
-					case 6:
-						image = SIX;
-						break;
-					case 7:
-						image = SEVEN;
-						break;
-					case 8:
-						image = EIGHT;
-						break;
-					case 9:
-						image = BOOM;
-						break;
-					case -9:
-						image = FLAG;
-						break;
-					case -1:
-						image = IS_BOOM;
-						break;
-					default:
-						image = BLOCK;
-						break;
-					}
-					g2.drawImage(image, x, y, this);
 
-				
+				// Rectangle rec = new Rectangle(x, y, ITEM_RADUS, ITEM_RADUS);
+
+				switch (reMap[i][j]) {
+				case 0:
+					image = ZERO;
+					break;
+				case 1:
+					image = ONE;
+					break;
+				case 2:
+					image = TWO;
+					break;
+				case 3:
+					image = THREE;
+					break;
+				case 4:
+					image = FOUR;
+					break;
+				case 5:
+					image = FIVE;
+					break;
+				case 6:
+					image = SIX;
+					break;
+				case 7:
+					image = SEVEN;
+					break;
+				case 8:
+					image = EIGHT;
+					break;
+				case 9:
+					image = BOOM;
+					break;
+				case -9:
+					image = FLAG;
+					break;
+				case -1:
+					image = IS_BOOM;
+					break;
+				default:
+					image = BLOCK;
+					break;
+				}
+				g2.drawImage(image, x, y, this);
 
 			}
 		}
 
+	}
+
+	public void newMap(int width, int height, int boomCount) {
+
+		this.map = cMap.getMap(width, height, boomCount);
+		this.reMap = new int[map.length][map[0].length];
+		for (int i = 0; i < reMap.length; i++) {
+			for (int j = 0; j < reMap[0].length; j++) {
+				reMap[i][j] = 999;
+			}
+		}
+		GamePanel.this.repaint();
 	}
 
 }
